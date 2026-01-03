@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Happy Birthday 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Helvetica Neue',sans-serif;}
+body{height:100vh;background:linear-gradient(180deg,#0b0b2f,#1a1a47);overflow:hidden;position:relative;color:#fff;}
+
+.star{position:absolute;border-radius:50%;background:white;opacity:0.8;animation:twinkle linear infinite;}
+@keyframes twinkle{0%,100%{opacity:0.1;}50%{opacity:1;}}
+
+.balloon{
+  position:absolute;
+  bottom:-220px;
+  border-radius:50%;
+  animation:floatUp linear infinite,sway 4s ease-in-out infinite;
+  filter:drop-shadow(0 18px 25px rgba(0,0,0,0.18));
+  z-index:1;
+}
+.balloon::before{
+  content:'';
+  position:absolute;
+  top:18%;left:24%;
+  width:26%;height:36%;
+  background:rgba(255,255,255,0.65);
+  border-radius:50%;
+  transform:rotate(-20deg);
+}
+.balloon::after{
+  content:'';
+  position:absolute;
+  bottom:-95px;left:50%;
+  width:2px;height:95px;
+  background:linear-gradient(to bottom, rgba(120,120,120,0.7), rgba(120,120,120,0.2));
+  transform-origin:top;
+  animation:stringWave 2.5s ease-in-out infinite;
+}
+
+@keyframes floatUp{from{transform:translateY(0);}to{transform:translateY(-135vh);}}
+@keyframes sway{0%{margin-left:-6px;}50%{margin-left:6px;}100%{margin-left:-6px;}}
+@keyframes stringWave{
+  0%{transform:translateX(-50%) rotate(-4deg);}
+  50%{transform:translateX(-50%) rotate(4deg);}
+  100%{transform:translateX(-50%) rotate(-4deg);}
+}
+
+/* ===== BONG BÓNG ĐẶC BIỆT ===== */
+#special-balloon{
+  width:300px;
+  height:380px;
+  background:radial-gradient(circle at 30% 30%,#ffffff,#ededed);
+  left:50%;
+  transform:translateX(-50%);
+  position:absolute;
+  animation:specialFloat 12s ease-out forwards,glow 2.5s ease-in-out infinite,sway 5s ease-in-out infinite;
+  filter:drop-shadow(0 25px 35px rgba(0,0,0,0.3));
+  z-index:2;
+  cursor:pointer;
+}
+#special-balloon::before{
+  content:'';
+  position:absolute;
+  top:18%;left:24%;
+  width:32%;height:42%;
+  background:rgba(255,255,255,0.75);
+  border-radius:50%;
+}
+#special-balloon::after{
+  content:'';
+  position:absolute;
+  bottom:-130px;left:50%;
+  width:2px;height:130px;
+  background:linear-gradient(to bottom, rgba(120,120,120,0.8), rgba(120,120,120,0.25));
+  animation:stringWave 2.8s ease-in-out infinite;
+}
+
+@keyframes specialFloat{from{bottom:-380px;}to{bottom:50%;}}
+@keyframes glow{
+  0%{box-shadow:0 0 15px rgba(255,182,193,0.4);}
+  50%{box-shadow:0 0 35px rgba(255,182,193,0.7);}
+  100%{box-shadow:0 0 15px rgba(255,182,193,0.4);}
+}
+
+/* ===== NOTE TREO DƯỚI DÂY ===== */
+.note{
+  position:absolute;
+  top:100%;
+  left:50%;
+  transform:translateX(-50%);
+  margin-top:140px;
+  background:#fff8dc;
+  color:#e2557b;
+  padding:10px 14px;
+  border-radius:6px;
+  font-size:14px;
+  font-weight:bold;
+  box-shadow:0 6px 15px rgba(0,0,0,0.3);
+  animation:noteSwing 3s ease-in-out infinite;
+  cursor:pointer;
+}
+.note::before{
+  content:'';
+  position:absolute;
+  top:-18px;
+  left:50%;
+  width:2px;
+  height:18px;
+  background:#999;
+  transform:translateX(-50%);
+}
+
+@keyframes noteSwing{
+  0%{transform:translateX(-50%) rotate(-2deg);}
+  50%{transform:translateX(-50%) rotate(2deg);}
+  100%{transform:translateX(-50%) rotate(-2deg);}
+}
+
+/* ===== THƯ ===== */
+#letter{
+  position:fixed;
+  inset:0;
+  background:rgba(10,10,30,0.95);
+  display:none;
+  padding:20px;
+  overflow-y:auto;
+  z-index:100;
+}
+.letter-box{
+  background:#1b1b3a;
+  padding:26px;
+  border-radius:18px;
+  max-width:520px;
+  margin:40px auto;
+  line-height:1.7;
+  color:#fff;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+#typewriter{
+  font-family:'Dancing Script', cursive;
+  font-weight:700;
+  font-style:italic;
+  font-size:20px;
+}
+
+canvas{position:fixed;inset:0;pointer-events:none;}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div id="special-balloon">
+  <div class="note">Hãy bấm vào đây 💌</div>
+</div>
+
+<div id="letter">
+  <div class="letter-box">
+    <h2 style="text-align:center;color:#e2557b;">🎂 Happy Birthday 🎂</h2>
+    <br>
+    <p id="typewriter"></p>
+  </div>
+</div>
+
+<div id="player"></div>
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+let player;
+function onYouTubeIframeAPIReady(){
+  player=new YT.Player('player',{
+    height:'0',width:'0',
+    videoId:'eKySr_sLzG8',
+    playerVars:{autoplay:0,controls:0,loop:1,playlist:'eKySr_sLzG8'}
+  });
+}
+
+// SAO
+function createStar(){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()*3+1;
+  s.style.width=size+'px';
+  s.style.height=size+'px';
+  s.style.left=Math.random()*100+'vw';
+  s.style.top=Math.random()*50+'vh';
+  s.style.animationDuration=(Math.random()*3+2)+'s';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),6000);
+}
+setInterval(createStar,200);
+
+// NỘI DUNG
+const letterText=`Chúc mừng sinh nhật em iu ❤️
+Vậy là giờ em đã bằng tuổi anh rồi đó ha.. chắc là em đã đợi ngày này lâu lắm rồi đúng không nè😁.
+Anh mong tuổi mới này sẽ đến với em một cách nhẹ nhàng và em sẽ có thật nhìu thành công.
+Anh chúc em iu luôn học giỏi, luôn vui vẻ và đặc biệt là luôn xinhh nha.
+Sinh nhật này chúng mình có nhau và anh mong rằng những lần sinh nhật sau nữa thì vẫn như vậy...
+Cuối cùng thì, chúc em iu của anh sinh nhật vui vẻ🥳
+Anh yêu em rất rất rất nhìu.`;
+
+// BONG BÓNG THƯỜNG
+function createBalloon(){
+  const b=document.createElement('div');
+  b.className='balloon';
+  const size=Math.random()*60+80;
+  b.style.width=size+'px';
+  b.style.height=size*1.25+'px';
+  const colors=[
+    'radial-gradient(circle at 30% 30%, #ff9aa2, #ff5c8a)',
+    'radial-gradient(circle at 30% 30%, #ffd1dc, #ff9eb5)',
+    'radial-gradient(circle at 30% 30%, #ffffff, #eaeaea)'
+  ];
+  b.style.background=colors[Math.floor(Math.random()*colors.length)];
+  b.style.left=Math.random()*100+'vw';
+  b.style.animationDuration=(Math.random()*6+8)+'s';
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(),16000);
+}
+setInterval(createBalloon,900);
+
+// TYPEWRITER
+function typeWriter(text,el,speed=35){
+  let i=0; el.innerHTML='';
+  (function t(){
+    if(i<text.length){
+      el.innerHTML+=text[i]==="\n"?"<br>":text[i];
+      i++; setTimeout(t,speed);
+    }
+  })();
+}
+
+// PHÁO HOA
+const canvas=document.getElementById('fireworks');
+const ctx=canvas.getContext('2d');
+canvas.width=innerWidth; canvas.height=innerHeight;
+function startFireworks(){
+  setInterval(()=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<100;i++){
+      ctx.beginPath();
+      ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height/2,Math.random()*3,0,Math.PI*2);
+      ctx.fillStyle=`hsl(${Math.random()*360},100%,70%)`;
+      ctx.fill();
+    }
+  },450);
+}
+
+// CLICK
+document.getElementById('special-balloon').addEventListener('click',()=>{
+  document.getElementById('letter').style.display='block';
+  startFireworks();
+  typeWriter(letterText,document.getElementById('typewriter'),35);
+  if(player&&player.playVideo) player.playVideo();
+});
+</script>
+
+</body>
+</html>
